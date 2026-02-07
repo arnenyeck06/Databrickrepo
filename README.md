@@ -14,16 +14,13 @@ This lakehouse processes Sales, CRM, and Product data through a multi-layered pi
 ---
 ***Medallion Architecture (Bronze → Silver → Gold) ***
 ---
-Layer  Purpose              Transformations 
-
----
-Bronze Raw data ingestion   Minimal processing, schema-on-read, full historical data.
-
----
-Silver Cleaned & enriched.  Validation, joins, type casting, business rules
-
----
-Gold  Analytics-ready       Aggregations, KPIs, and dimensional models for BI tools.
+## Layer, Purpose, Transformations 
+### Bronze:
+Raw data ingestion, Minimal processing, schema-on-read, full historical data.
+### Silver:
+Cleaned & enriched, Validation, joins, type casting, business rules
+### Gold:
+Analytics-ready, Aggregations, KPIs, and dimensional models for BI tools.
 
 ---
 ## 🛠️ Tech Stack
