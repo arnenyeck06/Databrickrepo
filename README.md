@@ -7,6 +7,7 @@ A production-ready data engineering project implementing the Medallion Architect
 # 📊 Project Overview
 
 This lakehouse processes Sales, CRM, and Product data through a multi-layered pipeline that ensures data quality, reliability, and scalability. Built as part of a Data Engineering Bootcamp, it demonstrates enterprise-grade data engineering practices.
+
 ---
 
 # 🏗️ Architecture
