@@ -5,17 +5,35 @@ A production-ready data engineering project implementing the Medallion Architect
 ---
 
 # 📊 Project Overview
-This lakehouse processes Sales, CRM, and Product data through a multi-layered pipeline that ensures data quality, reliability, and scalability. Built as part of a Data Engineering Bootcamp, it demonstrates enterprise-grade data engineering practices.
-🏗️ Architecture
-Medallion Architecture (Bronze → Silver → Gold)
-LayerPurposeTransformationsBronzeRaw data ingestionMinimal processing, schema-on-read, full historical dataSilverCleaned & enrichedDeduplication, validation, joins, type casting, business rulesGoldAnalytics-readyAggregations, KPIs, dimensional models for BI tools
-🛠️ Tech Stack
 
-Platform: Databricks (Community Edition)
+This lakehouse processes Sales, CRM, and Product data through a multi-layered pipeline that ensures data quality, reliability, and scalability. Built as part of a Data Engineering Bootcamp, it demonstrates enterprise-grade data engineering practices.
+---
+
+# 🏗️ Architecture
+---
+***Medallion Architecture (Bronze → Silver → Gold) ***
+---
+Layer  Purpose              Transformations 
+
+---
+Bronze Raw data ingestion   Minimal processing, schema-on-read, full historical data.
+
+---
+Silver Cleaned & enriched.  Validation, joins, type casting, business rules
+
+---
+Gold  Analytics-ready       Aggregations, KPIs, and dimensional models for BI tools.
+
+---
+## 🛠️ Tech Stack
+
+### Platform: Databricks (Community Edition)
 Languages: PySpark, SQL
 Storage: Delta Lake (ACID transactions, time travel)
 Orchestration: Databricks Workflows
 Version Control: Git integration with GitHub
+
+---
 
 📂 Repository Structure
 ├── init_lakehouse.ipynb              # Environment setup (catalogs, schemas, volumes)
@@ -25,7 +43,12 @@ Version Control: Git integration with GitHub
 ├── silver_crm_sales_details.ipynb    # Sales transaction processing
 ├── Silver_Orchestration.ipynb        # Pipeline orchestration controller
 └── datasets/                         # Sample data files
-✨ Key Features
+
+---
+
+# ✨ Key Features
+
+---
 
 ✅ ACID Transactions via Delta Lake for data consistency
 ✅ Schema Evolution with automatic schema enforcement and validation
