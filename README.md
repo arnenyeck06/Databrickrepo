@@ -25,11 +25,16 @@ Analytics-ready, Aggregations, KPIs, and dimensional models for BI tools.
 ---
 ## 🛠️ Tech Stack
 
-### Platform: Databricks (Community Edition)
-Languages: PySpark, SQL
-Storage: Delta Lake (ACID transactions, time travel)
-Orchestration: Databricks Workflows
-Version Control: Git integration with GitHub
+### Platform: 
+Databricks (Community Edition)
+### Languages:
+PySpark, SQL
+### Storage:
+Delta Lake (ACID transactions, time travel)
+### Orchestration: 
+Databricks Workflows
+### Version Control:
+Git integration with GitHub
 
 ---
 
@@ -56,52 +61,36 @@ Version Control: Git integration with GitHub
 ✅ Data Quality Checks including deduplication and null handling
 ✅ Incremental Processing to handle new data efficiently
 
+---
 🚀 Getting Started
 Prerequisites
 
 Databricks workspace (Community or Standard edition)
 GitHub account
 
-Setup Instructions
+# Setup Instructions
 
-Clone the repository
+## 1 Clone the repository
+```bash
+   git clone https://github.com/arnenyeck06/Databrickrepo.git
+```
+## 2 Import into Databricks
 
-bash   git clone https://github.com/arnenyeck06/Databrickrepo.git
-
-Import into Databricks
-
-Navigate to Repos in your Databricks workspace
+ Navigate to Repos in your Databricks workspace
 Click Add Repo → paste the GitHub URL
 Click Create Repo
 
 
-Initialize the lakehouse
+## 3 Initialize the lakehouse
 
-python   # Run this notebook first
+```bash
+  # Run this notebook first
    init_lakehouse.ipynb
+```
 
-Execute the pipeline
+## 4 Execute the pipeline
+Run notebooks sequentially(Bronze → Silver → Gold)
 
-Manual: Run notebooks sequentially (Bronze → Silver → Gold)
-Automated: Trigger Silver_Orchestration.ipynb to run the full pipeline
-
-
-
-📈 Pipeline Workflow
-mermaidgraph LR
-    A[Raw CSV/JSON] --> B[Bronze Layer]
-    B --> C[Silver Layer - CRM]
-    B --> D[Silver Layer - Products]
-    B --> E[Silver Layer - Sales]
-    C --> F[Gold Layer - Analytics]
-    D --> F
-    E --> F
-🎯 Use Cases
-
-Sales performance dashboards
-Customer segmentation analysis
-Product inventory optimization
-Revenue trend reporting
 
 📝 Learning Outcomes
 
