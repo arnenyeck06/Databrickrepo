@@ -55,10 +55,15 @@ Git integration with GitHub
 ---
 
 ✅ ACID Transactions via Delta Lake for data consistency
+
 ✅ Schema Evolution with automatic schema enforcement and validation
+
 ✅ Automated Workflows using Databricks Jobs with task dependencies
+
 ✅ Partitioning & Optimization for query performance at scale
-✅ Data Quality Checks including deduplication and null handling
+
+✅ Data Quality Checks, including deduplication and null handling
+
 ✅ Incremental Processing to handle new data efficiently
 
 ---
