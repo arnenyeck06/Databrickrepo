@@ -33,7 +33,8 @@ Version Control: Git integration with GitHub
 
 ---
 
-📂 Repository Structure
+# 📂 Repository Structure
+```bash
 ├── init_lakehouse.ipynb              # Environment setup (catalogs, schemas, volumes)
 ├── bike_lakehouse_2026/
 │   └── Bronze.ipynb                  # Raw data ingestion pipeline
@@ -41,7 +42,7 @@ Version Control: Git integration with GitHub
 ├── silver_crm_sales_details.ipynb    # Sales transaction processing
 ├── Silver_Orchestration.ipynb        # Pipeline orchestration controller
 └── datasets/                         # Sample data files
-
+```
 ---
 
 # ✨ Key Features
