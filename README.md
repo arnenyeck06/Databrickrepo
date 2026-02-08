@@ -103,3 +103,20 @@ Implemented production data pipelines using PySpark
 Designed scalable lakehouse architectures
 Automated ETL workflows with dependency management
 Applied data quality best practices
+
+## License
+MIT License - Copyright (c) 2025 Keystone Data Solutions
+
+---
+
+## Contact
+
+**Keystone Data Solutions**  
+*Transforming Data into Actionable Insights*
+
+- **Email**: info@keystonedatasolutions.com
+- **GitHub**: [https://github.com/keystone-data-solutions](https://github.com/keystone-data-solutions)
+- **LinkedIn**: [Keystone Data Solutions](https://linkedin.com/company/keystone-data-solutions)
+
+---
+## AUTHOR: Arne Nyeck
