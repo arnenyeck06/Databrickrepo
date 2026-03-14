@@ -1,9 +1,13 @@
 # Databricks notebook source
+# /// script
+# [tool.databricks.environment]
+# environment_version = "2"
+# ///
 import pyspark.sql.functions as F
 from pyspark.sql.types import StringType
 from pyspark.sql.functions import trim, col
 
-from pyspark.sql.functions import col, to_date, try_to_date
+from pyspark.sql.functions import col, to_date
 
 
 # COMMAND ----------
@@ -15,7 +19,8 @@ df.display()
 
 ## renaming columns
 Rename_map = {"CAT":"Category",
-             "SUBCAT":"Subcategory"
+             "SUBCAT":"Subcategory",
+             "MAINTENANCE":"Maintenance"
              }
 
 for old_name, new_name in Rename_map.items():
@@ -31,6 +36,3 @@ df.display()
     .format("delta")
     .saveAsTable("silver.erp_category")
 )
-
-# COMMAND ----------
-

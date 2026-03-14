@@ -1,10 +1,17 @@
 # Databricks notebook source
-import pyspark.sql.functions as F
+# /// script
+# [tool.databricks.environment]
+# environment_version = "2"
+# ///
 from pyspark.sql.types import StringType
 from pyspark.sql.functions import trim, col
+from pyspark.sql import functions as F
 
-from pyspark.sql.functions import col, to_date, try_to_date
 
+
+# COMMAND ----------
+
+spark.sql("DROP TABLE IF EXISTS silver.erp_customers")
 
 # COMMAND ----------
 
@@ -33,7 +40,19 @@ df.dtypes
 
 # COMMAND ----------
 
-from pyspark.sql import functions as F
+# clean birthdate >> remove future dates
+df = df.withColumn("birthdate",
+    F.when(F.col("birthdate") > F.current_date(), F.lit(None))
+     .otherwise(F.col("birthdate"))
+)
+
+# COMMAND ----------
+
+# clean CID >> remove 'NAS' prefix for joining in gold
+df = df.withColumn("CID", F.regexp_replace(F.col("CID"), "NAS", ""))
+
+# COMMAND ----------
+
 
 df = (
     df.withColumn(
@@ -57,17 +76,7 @@ df.display()
     .format("delta")
     .saveAsTable("silver.erp_customers")
 )
-
-# COMMAND ----------
-
-
-
-# COMMAND ----------
-
-
-
-# COMMAND ----------
-
+df.display()
 
 
 # COMMAND ----------

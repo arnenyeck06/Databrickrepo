@@ -1,4 +1,8 @@
 # Databricks notebook source
+# /// script
+# [tool.databricks.environment]
+# environment_version = "2"
+# ///
 # MAGIC %md
 # MAGIC #Init
 
@@ -10,11 +14,8 @@ from pyspark.sql.functions import trim, col
 
 # COMMAND ----------
 
-## Start preparing the first table from the bronze.
-#--STEPS--
-## REda from the Bronze
-## DO some Data transformation
-## Write it into silver Table.
+# MAGIC %md
+# MAGIC #Reading from Bronze
 
 # COMMAND ----------
 
@@ -26,7 +27,18 @@ df.display()
 
 # COMMAND ----------
 
-## trim
+# MAGIC %md
+# MAGIC #Transformations
+
+# COMMAND ----------
+
+# MAGIC %md
+# MAGIC ## trimming
+# MAGIC
+
+# COMMAND ----------
+
+
 for fields in df.schema.fields:
     if isinstance(fields.dataType,StringType):
         df = df.withColumn(fields.name,trim(col(fields.name)))
@@ -35,47 +47,54 @@ df.display()
 
 # COMMAND ----------
 
-df = (
-    df.withColumn("cst_marital_status",
-    F.when(F.upper(F.col("cst_marital_status")) == "S", "Single")
-    .when(F.upper(F.col("cst_marital_status")) == "M", "Married")
-    
-)
-.withColumn("cst_gndr",
-    F.when(F.upper(F.col("cst_gndr")) == "F", "Female")
-    .when(F.upper(F.col("cst_gndr")) == "M", "Male")
-    
-))
-
-
+# MAGIC %md
+# MAGIC ## renaming
+# MAGIC
 
 # COMMAND ----------
+
+## renaming columns
+
+rename_map = {
+    "cst_id"            : "customer_id",
+    "cst_key"           : "customer_key",
+    "cst_firstname"     : "firstname",
+    "cst_lastname"      : "lastname",
+    "cst_marital_status": "marital_status",
+    "cst_gndr"          : "gender",
+    "cst_create_date"   : "create_date",
+}
+
+for old_name, new_name in rename_map.items():
+    df = df.withColumnRenamed(old_name, new_name)
 
 df.display()
 
 # COMMAND ----------
 
 # MAGIC %md
-# MAGIC ## renaming columns
+# MAGIC ## Normalization
 
 # COMMAND ----------
 
-## renaming columns
-Rename_map = {"cst_id":"customer_id",
-             "cst_key":"customer_key",
-             "cst_firstname":"firstname",
-             "cst_lastname":"lastname",
-             "cst_marital_status":"marital_status",
-             "cst_gndr":"gender",
-             "cst_create_date":"create_date"
-             }
+# DBTITLE 1,Normalization (fix unresolved column error)
+marital_col = F.upper(F.col("marital_status"))
+gender_col  = F.upper(F.col("gender"))
 
-
-
-# COMMAND ----------
-
-for old_name, new_name in Rename_map.items():
-    df = df.withColumnRenamed(old_name,new_name)
+df = (
+    df.withColumn(
+        "marital_status",
+        F.when(marital_col == "S", "Single")
+         .when(marital_col == "M", "Married")
+         .otherwise(F.col("marital_status"))
+    )
+    .withColumn(
+        "gender",
+        F.when(gender_col == "F", "Female")
+         .when(gender_col == "M", "Male")
+         .otherwise(F.col("gender"))
+    )
+)
 df.display()
 
 # COMMAND ----------
@@ -88,19 +107,7 @@ df.display()
 
 (
     df.write
-    .mode("overwrite")
-    .format("delta")
-    .saveAsTable("silver.crm_customers")
+      .mode("overwrite")
+      .format("delta")
+      .saveAsTable("silver.crm_customers")
 )
-
-# COMMAND ----------
-
-# MAGIC %sql
-# MAGIC select * from workspace.silver.crm_customers
-
-# COMMAND ----------
-
-# import dependencies
-# name maping
-# read from the bronze
-# do some data transformation(trimming, normalizing columns and renaming. write into silver.

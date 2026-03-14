@@ -1,38 +1,18 @@
 # Databricks notebook source
+# /// script
+# [tool.databricks.environment]
+# environment_version = "2"
+# ///
 import pyspark.sql.functions as F
 from pyspark.sql.types import StringType
 from pyspark.sql.functions import trim, col
 
-from pyspark.sql.functions import col, to_date, try_to_date
 
 
 # COMMAND ----------
 
 df = spark.table("workspace.bronze.crm_sales_details")
 df.display()
-
-# COMMAND ----------
-
-# MAGIC %sql
-# MAGIC SELECT COUNT(*) AS matching_rows
-# MAGIC FROM silver.crm_sales_details s
-# MAGIC JOIN silver.crm_products p
-# MAGIC     ON UPPER(TRIM(s.product_key)) = UPPER(TRIM(p.product_key));
-# MAGIC
-
-# COMMAND ----------
-
-## change column names to full names
-##format order date to date format
-##format ship date to date format
-##format due date to date format
-##format sales to float
-##format quantity to integer
-##format price to float
-##format customer id to integer
-##format product id to integer
-## renaming columns
-
 
 # COMMAND ----------
 
@@ -50,7 +30,7 @@ Rename_map = {"sls_ord_num":"order_number",
 
 for old_name, new_name in Rename_map.items():
     df = df.withColumnRenamed(old_name, new_name)
-df.display()
+
 
 # COMMAND ----------
 
@@ -58,11 +38,14 @@ df.dtypes
 
 # COMMAND ----------
 
-df = df.withColumn("order_date", try_to_date(col("order_date"), "yyyyMMdd")) \
-       .withColumn("ship_date", try_to_date(col("ship_date"), "yyyyMMdd")) \
-       .withColumn("due_date", try_to_date(col("due_date"), "yyyyMMdd"))
-       
-df.display()
+def safe_to_date(c, fmt):
+    return F.when(F.col(c).rlike("^\\d{8}$"), F.to_date(F.col(c), fmt)).otherwise(F.lit(None))
+
+df = (
+    df.withColumn("order_date", safe_to_date("order_date", "yyyyMMdd"))
+      .withColumn("ship_date",  safe_to_date("ship_date",  "yyyyMMdd"))
+      .withColumn("due_date",   safe_to_date("due_date",   "yyyyMMdd"))
+)
 
 # COMMAND ----------
 
@@ -71,58 +54,6 @@ df.display()
 (
     df.write
     .mode("overwrite")
-    #.option("overwriteSchema", "true")
     .format("delta")
     .saveAsTable("silver.crm_sales_details")
 )
-
-# COMMAND ----------
-
-# MAGIC %sql
-# MAGIC WITH monthly_sales AS (
-# MAGIC     SELECT 
-# MAGIC         s.customer_id,
-# MAGIC         DATE_TRUNC('month', s.order_date) AS month,
-# MAGIC         SUM(s.quantity * s.price) AS total_sales,
-# MAGIC         p.product_id,
-# MAGIC         p.product_name,
-# MAGIC         p.product_cost,
-# MAGIC         p.product_size
-# MAGIC     FROM silver.crm_sales_details s
-# MAGIC     JOIN silver.crm_products p
-# MAGIC         ON UPPER(TRIM(s.product_key)) = UPPER(TRIM(p.product_key))
-# MAGIC     GROUP BY 
-# MAGIC         s.customer_id,
-# MAGIC         DATE_TRUNC('month', s.order_date),
-# MAGIC         p.product_id,
-# MAGIC         p.product_name,
-# MAGIC         p.product_cost,
-# MAGIC         p.product_size
-# MAGIC ),
-# MAGIC ranked_sales AS (
-# MAGIC     SELECT
-# MAGIC         customer_id,
-# MAGIC         month,
-# MAGIC         total_sales,
-# MAGIC         product_id,
-# MAGIC         product_name,
-# MAGIC         product_cost,
-# MAGIC         product_size,
-# MAGIC         RANK() OVER (PARTITION BY month ORDER BY total_sales DESC) AS sales_rank
-# MAGIC     FROM monthly_sales
-# MAGIC )
-# MAGIC SELECT 
-# MAGIC     customer_id,
-# MAGIC     month,
-# MAGIC     total_sales,
-# MAGIC     product_id,
-# MAGIC     product_name,
-# MAGIC     product_cost,
-# MAGIC     product_size
-# MAGIC FROM ranked_sales
-# MAGIC WHERE sales_rank = 1
-# MAGIC ORDER BY month, customer_id;
-# MAGIC
-
-# COMMAND ----------
-
