@@ -46,6 +46,7 @@ SELECT
     s.order_date,
     s.ship_date,
     s.due_date,
+    s.price,
     p.product_key,
     c.cust_surrogate_key AS customer_key
 FROM workspace.silver.crm_sales_details s

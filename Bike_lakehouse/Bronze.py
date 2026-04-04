@@ -95,3 +95,12 @@ for item in INGESTION_CONFIG:
           .format("delta")
           .saveAsTable(f"workspace.bronze.{item['table']}")
     )
+
+# COMMAND ----------
+
+spark.sql("""
+SELECT sls_order_dt 
+FROM workspace.bronze.crm_sales_details 
+WHERE sls_order_dt IS NOT NULL 
+LIMIT 5
+""").display()

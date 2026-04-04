@@ -22,7 +22,7 @@ from pyspark.sql.window import Window
 
 query = """
 SELECT
-    ROW_NUMBER() OVER (ORDER BY prd.product_start_date, prd.product_key) AS prdt_key,
+    ROW_NUMBER() OVER (ORDER BY prd.product_start_date, prd.product_key)prod_key,
     prd.product_id,
     trim(upper(prd.product_key)) AS product_number,
     prd.product_key,

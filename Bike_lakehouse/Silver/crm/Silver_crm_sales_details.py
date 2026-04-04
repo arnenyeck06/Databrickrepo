@@ -8,15 +8,13 @@ from pyspark.sql.types import StringType
 from pyspark.sql.functions import trim, col
 
 
-
 # COMMAND ----------
 
-df = spark.table("workspace.bronze.crm_sales_details")
+df = spark.table("workspace.silver.crm_sales_details")
 df.display()
 
 # COMMAND ----------
 
-## renaming columns
 Rename_map = {"sls_ord_num":"order_number",
              "sls_prd_key":"product_key",
              "sls_cust_id":"customer_id",
@@ -31,21 +29,21 @@ Rename_map = {"sls_ord_num":"order_number",
 for old_name, new_name in Rename_map.items():
     df = df.withColumnRenamed(old_name, new_name)
 
-
 # COMMAND ----------
 
-df.dtypes
+df.display()
 
 # COMMAND ----------
-
-def safe_to_date(c, fmt):
-    return F.when(F.col(c).rlike("^\\d{8}$"), F.to_date(F.col(c), fmt)).otherwise(F.lit(None))
 
 df = (
-    df.withColumn("order_date", safe_to_date("order_date", "yyyyMMdd"))
-      .withColumn("ship_date",  safe_to_date("ship_date",  "yyyyMMdd"))
-      .withColumn("due_date",   safe_to_date("due_date",   "yyyyMMdd"))
+    df.withColumn("order_date", F.to_date(F.col("order_date").cast("string"), "yyyyMMdd"))
+      .withColumn("ship_date",  F.to_date(F.col("ship_date").cast("string"),  "yyyyMMdd"))
+      .withColumn("due_date",   F.to_date(F.col("due_date").cast("string"),   "yyyyMMdd"))
 )
+
+# COMMAND ----------
+
+df.display()
 
 # COMMAND ----------
 
@@ -57,3 +55,9 @@ df = (
     .format("delta")
     .saveAsTable("silver.crm_sales_details")
 )
+
+df.display()
+
+# COMMAND ----------
+
+#spark.sql("DROP TABLE IF EXISTS workspace.silver.crm_sales_details")
